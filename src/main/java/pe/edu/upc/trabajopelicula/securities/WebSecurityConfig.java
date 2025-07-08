@@ -78,7 +78,7 @@ public class    WebSecurityConfig {
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration config = new CorsConfiguration();
-    config.setAllowedOrigins(List.of("http://localhost:4200")); // ✅ agrega tu frontend aquí
+    config.setAllowedOrigins(List.of("https://front-cinema-hub.vercel.app/landinghome")); // ✅ agrega tu frontend aquí
     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
     config.setAllowedHeaders(List.of("*"));
     config.setAllowCredentials(true); // ✅ si usas cookies o envías auth
