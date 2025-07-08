@@ -1,20 +1,19 @@
-# the base image
+# Etapa 1: Construcción del JAR usando Maven
+FROM maven:3.9.6-eclipse-temurin-21 AS build
+WORKDIR /app
+COPY . .
+RUN chmod +x mvnw && ./mvnw clean package -DskipTests
+
+# Etapa 2: Imagen de ejecución usando OpenJDK
 FROM openjdk:21-jdk-oracle
-# Establece la variable de entorno para la zona horaria (ajusta según tu necesidad)
 ENV TZ=America/Lima
+WORKDIR /app
 
-RUN ./mvnw clean install
+# Copia el JAR desde la etapa de compilación
+COPY --from=build /app/target/trabajopelicula-0.0.1-SNAPSHOT.jar app.jar
 
-# the JAR file path
-ARG JAR_FILE=target/trabajopelicula-0.0.1-SNAPSHOT.jar
-
-# Copy the JAR file from the build context into the Docker image
-COPY ${JAR_FILE} trabajopelicula-0.0.1-SNAPSHOT.jar
-
-CMD apt-get update -y
-
-# Exponer el puerto HTTP
+# Expone el puerto por defecto
 EXPOSE 8080
 
-# Set the default command to run the Java application
-ENTRYPOINT ["java", "-Xmx2048M", "-jar", "/trabajopelicula-0.0.1-SNAPSHOT.jar"]
+# Comando para ejecutar la app
+ENTRYPOINT ["java", "-Xmx2048M", "-jar", "app.jar"]
